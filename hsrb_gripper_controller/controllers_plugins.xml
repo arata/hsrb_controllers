@@ -1,0 +1,9 @@
+<library path="hsrb_gripper_controller">
+  <class name="hsrb_gripper_controller/HrhGripperController"
+         type="hsrb_gripper_controller::HrhGripperController"
+         base_class_type="controller_interface::ControllerInterface">
+     <description>
+       Controller for High Ratio Hypoid gripper
+     </description>
+   </class>
+</library>

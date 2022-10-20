@@ -1,0 +1,41 @@
+<package format="3">
+  <name>hsrb_base_controllers</name>
+  <version>2.0.0</version>
+  <description>Ros controller plugins for HSR-B's base control.</description>
+
+  <maintainer email="xr-hsr-support@mail.toyota.co.jp">HSR Support</maintainer>
+
+  <license>BSD 3-clause Clear License</license>
+
+  <author>Akiyoshi Ochiai</author>
+  <author>Kazuhito Tanaka</author>
+  <author>Keisuke Takeshita</author>
+  <author>Koji Terada</author>
+  <author>Syuuhei Shiro</author>
+  <author>Tamaki Nishino</author>
+  <author>Yutaka Takaoka</author>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>angles</depend>
+  <depend>controller_interface</depend>
+  <depend>control_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>hardware_interface</depend>
+  <depend>joint_trajectory_controller</depend>
+  <depend>nav_msgs</depend>
+  <depend>pluginlib</depend>
+  <depend>rclcpp</depend>
+  <depend>rclcpp_action</depend>
+  <depend>realtime_tools</depend>
+  <depend>tf2_msgs</depend>
+  <depend>trajectory_msgs</depend>
+  <depend>urdf</depend>
+
+  <test_depend>ament_cmake_gtest</test_depend>
+  <test_depend>ament_cmake_gmock</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

@@ -1,0 +1,8 @@
+hand_left_force:
+  - [0, 0.2]
+  - [1, 0.1]
+hand_right_force:
+  - [0, 0.2]
+  - [1, 0.1]
+hand_spring: 1
+arm_length: 1
