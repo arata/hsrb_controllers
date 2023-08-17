@@ -45,13 +45,13 @@ constexpr double kDefaultTransformPublishRate = 30.0;
 namespace hsrb_base_controllers {
 
 /// オドメトリ計算クラスの初期化
-Odometry::Odometry(const rclcpp::Node::SharedPtr& node)
+Odometry::Odometry(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node)
     : odometry_(Eigen::Vector3d::Zero()),
       velocity_(Eigen::Vector3d::Zero()) {}
 
 
 /// 全方位台車ホイールオドメトリ計算クラスの初期化
-BaseOdometry::BaseOdometry(const rclcpp::Node::SharedPtr& node) : Odometry(node) {
+BaseOdometry::BaseOdometry(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node) : Odometry(node) {
   input_odom_ = std::make_shared<InputOdometry>(node);
 }
 
@@ -75,12 +75,12 @@ void BaseOdometry::InitOdometry() {
 }
 
 /// 全方位台車ホイールオドメトリ計算クラスの初期化
-WheelOdometry::WheelOdometry(const rclcpp::Node::SharedPtr& node, const OmniBaseSize& omnibase_size)
+WheelOdometry::WheelOdometry(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node, const OmniBaseSize& omnibase_size)
     : Odometry(node),
       last_odometry_published_time_(node->now()),
       last_transform_published_time_(node->now()),
-      odometry_publish_period_(0),
-      transform_publish_period_(0) {
+      odometry_publish_period_(0, 0),
+      transform_publish_period_(0, 0) {
   // 台車オドメトリに関するフレーム名を取得
   wheel_odom_frame_ = GetParameter(node, "wheel_odom_map_frame", "odom");
   wheel_base_frame_ = GetParameter(node, "wheel_odom_base_frame", "base_footprint_wheel");

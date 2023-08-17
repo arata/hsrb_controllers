@@ -35,7 +35,7 @@ DAMAGE.
 namespace hsrb_base_controllers {
 
 /// 外部から入力されるオドメトリ
-InputOdometry::InputOdometry(const rclcpp::Node::SharedPtr& node) {
+InputOdometry::InputOdometry(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node) {
   odometry_subscriber_ = node->create_subscription<nav_msgs::msg::Odometry>(
       "odom", 1, std::bind(&InputOdometry::OdometryCallback, this, std::placeholders::_1));
   InitOdometry();

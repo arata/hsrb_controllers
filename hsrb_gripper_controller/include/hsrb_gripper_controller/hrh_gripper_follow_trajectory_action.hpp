@@ -57,9 +57,13 @@ class HrhGripperFollowTrajectoryAction : public HrhGripperAction<control_msgs::a
 
   void PreemptActiveGoal() override;
 
+  private:
+    // added
+    joint_trajectory_controller::interpolation_methods::InterpolationMethod interpolation_method_{joint_trajectory_controller::interpolation_methods::DEFAULT_INTERPOLATION};
+
  protected:
   /// アクションの初期化の実装
-  bool InitImpl(const rclcpp::Node::SharedPtr& node) override;
+  bool InitImpl(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node) override;
   /// ゴールが受け入れ可能かをチェックする
   bool ValidateGoal(const control_msgs::action::FollowJointTrajectory::Goal& goal) override;
   /// アクションの目標を更新する

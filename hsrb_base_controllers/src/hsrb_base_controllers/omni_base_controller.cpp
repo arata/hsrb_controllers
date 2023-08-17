@@ -58,7 +58,11 @@ bool OmniBaseController::InitImpl() {
     RCLCPP_ERROR(get_node()->get_logger(), "The size of joints must be three.");
     return false;
   }
-  default_tolerances_ = joint_trajectory_controller::get_segment_tolerances(*get_node(), base_coordinate_names);
+  // default_tolerances_ = joint_trajectory_controller::get_segment_tolerances(base_coordinate_names);
+
+  auto param_listener_ = std::make_shared<joint_trajectory_controller::ParamListener>(get_node());
+  auto params_ = param_listener_->get_params();
+  default_tolerances_ = joint_trajectory_controller::get_segment_tolerances(params_);
 
   // 速度のサブスクライバをセット
   velocity_subscriber_ = std::make_shared<CommandVelocitySubscriber>(get_node(), this);
@@ -106,8 +110,8 @@ controller_interface::InterfaceConfiguration OmniBaseController::state_interface
   return conf;
 }
 
-controller_interface::return_type OmniBaseController::update() {
-  if (get_current_state().id() == lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE) {
+controller_interface::return_type OmniBaseController::update(const rclcpp::Time & time, const rclcpp::Duration & period) {
+  if (get_state().id() == lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE) {
     return controller_interface::return_type::OK;
   }
 
@@ -119,12 +123,12 @@ controller_interface::return_type OmniBaseController::update() {
     return controller_interface::return_type::ERROR;
   }
   const auto current_time = get_node()->get_clock()->now();
-  const double period = (current_time - last_update_time_).seconds();
+  const double period_ = (current_time - last_update_time_).seconds();
   last_update_time_ = current_time;
 
   // オドメトリの更新
-  wheel_odometry_->UpdateOdometry(period, joint_positions, joint_velocities);
-  base_odometry_->UpdateOdometry(period, wheel_odometry_->odometry(), wheel_odometry_->velocity());
+  wheel_odometry_->UpdateOdometry(period_, joint_positions, joint_velocities);
+  base_odometry_->UpdateOdometry(period_, wheel_odometry_->odometry(), wheel_odometry_->velocity());
 
   // 台車の追従状態をアップデート
   ControllerBaseState base_state(base_odometry_->odometry(), base_odometry_->velocity());
@@ -156,7 +160,7 @@ controller_interface::return_type OmniBaseController::update() {
     // 速度追従
     output_velocity = velocity_control_->GetOutputVelocity();
   }
-  joint_controller_->SetJointCommand(period, output_velocity);
+  joint_controller_->SetJointCommand(period_, output_velocity);
 
   // 台車の現状態(指令値、現在地、差分)をパブリッシュ
   const ControllerJointState joint_state(joint_positions,
@@ -213,7 +217,7 @@ OmniBaseController::on_deactivate(const rclcpp_lifecycle::State& previous_state)
 }
 
 bool OmniBaseController::IsAcceptable() {
-  return get_current_state().id() != lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE;
+  return get_state().id() != lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE;
 }
 
 void OmniBaseController::UpdateVelocity(const geometry_msgs::msg::Twist::SharedPtr& msg) {

@@ -88,10 +88,10 @@ controller_interface::return_type HrhGripperController::init(const std::string& 
 }
 
 bool HrhGripperController::InitImpl() {
-  std::vector<std::string> joint_names = GetParameter(
-      get_node(), "joints", std::vector<std::string>({"hand_motor_joint"}));
+  std::vector<std::string> joint_names = GetParameter(get_node(), "joints", std::vector<std::string>({"hand_motor_joint"}));
+  
   if (joint_names.size() != 1) {
-    RCLCPP_FATAL_STREAM(node_->get_logger(), "The size of joints must be one.");
+    RCLCPP_FATAL_STREAM(get_node()->get_logger(), "The size of joints must be one.");
     return false;
   }
   joint_name_ = joint_names.at(0);
@@ -124,7 +124,7 @@ controller_interface::InterfaceConfiguration HrhGripperController::state_interfa
   return conf;
 }
 
-controller_interface::return_type HrhGripperController::update() {
+controller_interface::return_type HrhGripperController::update(const rclcpp::Time & time, const rclcpp::Duration & period) {
   if (active_action_) {
     active_action_->Update(get_node()->get_clock()->now());
   }
@@ -179,7 +179,7 @@ HrhGripperController::on_deactivate(const rclcpp_lifecycle::State& previous_stat
 }
 
 bool HrhGripperController::IsAcceptable() {
-  return get_current_state().id() != lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE;
+  return get_state().id() != lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE;
 }
 
 void HrhGripperController::PreemptActiveGoal() {

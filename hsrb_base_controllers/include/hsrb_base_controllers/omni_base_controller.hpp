@@ -43,35 +43,33 @@ DAMAGE.
 #include <hsrb_base_controllers/omni_base_joint_controller.hpp>
 #include <hsrb_base_controllers/omni_base_odometry.hpp>
 
+#include "lifecycle_msgs/msg/state.hpp"
+
 namespace hsrb_base_controllers {
 
 /// 全方位台車速度コントローラクラス
-class OmniBaseController
-    : public controller_interface::ControllerInterface,
-      public IControllerCommandInterface {
+class OmniBaseController: public controller_interface::ControllerInterface, public IControllerCommandInterface
+{
  public:
   OmniBaseController() = default;
   ~OmniBaseController() = default;
 
   // コントローラ初期化
-  controller_interface::return_type init(const std::string& controller_name) override;
+  controller_interface::return_type init(const std::string& controller_name);
 
   // ros2_controlのインターフェース設定
   controller_interface::InterfaceConfiguration command_interface_configuration() const override;
   controller_interface::InterfaceConfiguration state_interface_configuration() const override;
 
   // 台車ジョイント角速度を計算し更新
-  controller_interface::return_type update() override;
+  controller_interface::return_type update(const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
   // configure時に呼ばれる関数
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_configure(const rclcpp_lifecycle::State& previous_state) override;
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_configure(const rclcpp_lifecycle::State& previous_state) override;
   // activate時に呼ばれる関数
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_activate(const rclcpp_lifecycle::State& previous_state) override;
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_activate(const rclcpp_lifecycle::State& previous_state) override;
   // deactivate時に呼ばれる関数
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_deactivate(const rclcpp_lifecycle::State& previous_state) override;
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_deactivate(const rclcpp_lifecycle::State& previous_state) override;
 
   // 指令を受付可能か返す
   bool IsAcceptable() override;

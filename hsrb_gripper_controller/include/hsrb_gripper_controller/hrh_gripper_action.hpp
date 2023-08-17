@@ -41,6 +41,8 @@ DAMAGE.
 #include <realtime_tools/realtime_buffer.h>
 #include <realtime_tools/realtime_server_goal_handle.h>
 
+#include <rclcpp_lifecycle/lifecycle_node.hpp>
+
 namespace hsrb_gripper_controller {
 
 class HrhGripperController;
@@ -50,7 +52,7 @@ constexpr double kDefaultActionMonitorRate = 20.0;
 
 // デフォルト値ありのパラメータ取得
 template <typename ParameterType>
-auto GetParameter(const rclcpp::Node::SharedPtr& node,
+auto GetParameter(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node,
                   const std::string& name,
                   const ParameterType& default_value) {
   if (!node->has_parameter(name)) {
@@ -62,7 +64,7 @@ auto GetParameter(const rclcpp::Node::SharedPtr& node,
 
 // デフォルト値ありのパラメータ取得，パラメータが非正の場合もデフォルト値を利用する
 template <typename ParameterType>
-auto GetPositiveParameter(const rclcpp::Node::SharedPtr& node,
+auto GetPositiveParameter(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node,
                           const std::string& name,
                           const ParameterType& default_value) {
   auto value = GetParameter(node, name, default_value);
@@ -76,7 +78,7 @@ auto GetPositiveParameter(const rclcpp::Node::SharedPtr& node,
 
 // デフォルト値ありのパラメータ取得，パラメータが負の場合もデフォルト値を利用する
 template <typename ParameterType>
-auto GetNonNegativeParameter(const rclcpp::Node::SharedPtr& node,
+auto GetNonNegativeParameter(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node,
                              const std::string& name,
                              const ParameterType& default_value) {
   auto value = GetParameter(node, name, default_value);
@@ -102,7 +104,7 @@ class IHrhGripperAction : public std::enable_shared_from_this<IHrhGripperAction>
   /// 初期化
   /// @param [in] node ノードのSharedPtr
   /// @return true: 成功 false: 失敗
-  virtual bool Init(const rclcpp::Node::SharedPtr& node) = 0;
+  virtual bool Init(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node) = 0;
 
   /// 周期更新処理
   /// @param [in] time 現在時刻
@@ -136,7 +138,8 @@ class HrhGripperAction : public IHrhGripperAction {
   /// 初期化
   /// @param [in] node ノードのSharedPtr
   /// @return true: 成功 false: 失敗
-  bool Init(const rclcpp::Node::SharedPtr& node) override {
+  // bool Init(const rclcpp::Node::SharedPtr& node) override {
+  bool Init(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node) override {
     node_ = node;
 
     double action_monitor_rate = GetPositiveParameter(node, "action_monitor_rate", kDefaultActionMonitorRate);
@@ -221,7 +224,7 @@ class HrhGripperAction : public IHrhGripperAction {
   }
 
   /// アクションの初期化の実装
-  virtual bool InitImpl(const rclcpp::Node::SharedPtr& node) { return true; }
+  virtual bool InitImpl(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node) { return true; }
   /// ゴールが受け入れ可能かをチェックする
   virtual bool ValidateGoal(const typename ActionType::Goal& goal) { return true; }
   /// アクションの目標を更新する
@@ -238,7 +241,9 @@ class HrhGripperAction : public IHrhGripperAction {
   double action_monitor_period_;
 
   /// ノードのSharedPtr
-  rclcpp::Node::SharedPtr node_;
+  // rclcpp::Node::SharedPtr node_;
+  rclcpp_lifecycle::LifecycleNode::SharedPtr node_;
+  
   /// アクション実行時のタイマー
   rclcpp::TimerBase::SharedPtr goal_handle_timer_;
 };

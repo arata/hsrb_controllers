@@ -44,6 +44,8 @@ DAMAGE.
 #include <hsrb_base_controllers/omni_base_input_odometry.hpp>
 #include <hsrb_base_controllers/twin_caster_drive.hpp>
 
+#include <rclcpp_lifecycle/lifecycle_node.hpp>
+
 namespace hsrb_base_controllers {
 
 /// オドメトリ計算クラス
@@ -51,7 +53,7 @@ class Odometry {
  public:
   using Ptr = std::shared_ptr<Odometry>;
 
-  explicit Odometry(const rclcpp::Node::SharedPtr& node);
+  explicit Odometry(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node);
   virtual ~Odometry() {}
 
   // オドメトリを更新する
@@ -75,7 +77,7 @@ class BaseOdometry : public Odometry {
  public:
   using Ptr = std::shared_ptr<BaseOdometry>;
 
-  explicit BaseOdometry(const rclcpp::Node::SharedPtr& node);
+  explicit BaseOdometry(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node);
   virtual ~BaseOdometry() {}
 
   // オドメトリを更新する
@@ -95,7 +97,7 @@ class WheelOdometry : public Odometry {
  public:
   using Ptr = std::shared_ptr<WheelOdometry>;
 
-  WheelOdometry(const rclcpp::Node::SharedPtr& node, const OmniBaseSize& omnibase_size);
+  WheelOdometry(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node, const OmniBaseSize& omnibase_size);
   virtual ~WheelOdometry() {}
   // オドメトリを更新する
   virtual void UpdateOdometry(double period, const Eigen::Vector3d& positions, const Eigen::Vector3d& velocities);

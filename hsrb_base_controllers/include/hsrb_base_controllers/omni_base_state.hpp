@@ -43,6 +43,8 @@ DAMAGE.
 
 #include <hsrb_base_controllers/twin_caster_drive.hpp>
 
+#include <rclcpp_lifecycle/lifecycle_node.hpp>
+
 namespace hsrb_base_controllers {
 
 struct State {
@@ -92,7 +94,7 @@ class StatePublisher {
  public:
   using Ptr = std::shared_ptr<StatePublisher>;
 
-  StatePublisher(const rclcpp::Node::SharedPtr& node,
+  StatePublisher(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node,
                  const std::string& topic_name,
                  const std::vector<std::string>& joint_names);
 
@@ -103,7 +105,9 @@ class StatePublisher {
   }
 
  private:
-  rclcpp::Node::SharedPtr node_;
+  // rclcpp::Node::SharedPtr node_;
+  // std::shared_ptr<rclcpp_lifecycle::LifecycleNode> node_;
+  rclcpp_lifecycle::LifecycleNode::SharedPtr node_;
   std::vector<std::string> joint_names_;
   rclcpp::Duration state_publish_period_;
 

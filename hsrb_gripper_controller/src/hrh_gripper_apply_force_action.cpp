@@ -177,7 +177,7 @@ void HrhGripperApplyForceAction::PreemptActiveGoal() {
 }
 
 /// アクションの初期化の実装
-bool HrhGripperApplyForceAction::InitImpl(const rclcpp::Node::SharedPtr& node) {
+  bool HrhGripperApplyForceAction::InitImpl(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node) {
   command_buffer_.initRT(0.0);
 
   goal_tolerance_ = GetPositiveParameter(node, "force_goal_tolerance", kDefaultForceGoalTolerance);

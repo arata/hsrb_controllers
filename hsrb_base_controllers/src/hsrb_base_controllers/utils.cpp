@@ -35,8 +35,10 @@ DAMAGE.
 namespace hsrb_base_controllers {
 
 // 非正の場合，デフォルト値を使うパラメータ取得
-double GetPositiveParameter(
-    const rclcpp::Node::SharedPtr& node, const std::string& parameter_name, double default_value) {
+// double GetPositiveParameter(const rclcpp::Node::SharedPtr& node,
+double GetPositiveParameter(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node,
+                            const std::string& parameter_name,
+                            double default_value) {
   auto value = GetParameter(node, parameter_name, default_value);
   if (value > 0.0) {
     return value;

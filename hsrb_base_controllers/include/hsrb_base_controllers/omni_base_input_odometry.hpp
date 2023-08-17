@@ -39,6 +39,8 @@ DAMAGE.
 #include <rclcpp/rclcpp.hpp>
 #include <realtime_tools/realtime_buffer.h>
 
+#include <rclcpp_lifecycle/lifecycle_node.hpp>
+
 namespace hsrb_base_controllers {
 
 typedef realtime_tools::RealtimeBuffer<nav_msgs::msg::Odometry> RealtimeOdometryBuffer;
@@ -47,7 +49,7 @@ class InputOdometry {
  public:
   using Ptr = std::shared_ptr<InputOdometry>;
 
-  explicit InputOdometry(const rclcpp::Node::SharedPtr& node);
+  explicit InputOdometry(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node);
 
   // オドメトリを初期化する
   void InitOdometry();

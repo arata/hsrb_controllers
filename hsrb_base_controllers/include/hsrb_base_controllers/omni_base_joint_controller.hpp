@@ -46,6 +46,8 @@ DAMAGE.
 #include <hsrb_base_controllers/filter.hpp>
 #include <hsrb_base_controllers/twin_caster_drive.hpp>
 
+#include <rclcpp_lifecycle/lifecycle_node.hpp>
+
 namespace hsrb_base_controllers {
 
 /// 旋回軸速度と車輪速度のリミット
@@ -61,7 +63,7 @@ class OmniBaseJointController {
  public:
   using Ptr = std::shared_ptr<OmniBaseJointController>;
 
-  explicit OmniBaseJointController(const rclcpp::Node::SharedPtr& node);
+  explicit OmniBaseJointController(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node);
   ~OmniBaseJointController() = default;
 
   // パラメータ初期化
@@ -94,7 +96,9 @@ class OmniBaseJointController {
 
  private:
   // コントローラのノードハンドル
-  rclcpp::Node::SharedPtr node_;
+  // rclcpp::Node::SharedPtr node_;
+  // std::shared_ptr<rclcpp_lifecycle::LifecycleNode> node_;
+  rclcpp_lifecycle::LifecycleNode::SharedPtr node_;
   // Joint指令値
   Eigen::Vector3d joint_command_;
   // 各軸の名前

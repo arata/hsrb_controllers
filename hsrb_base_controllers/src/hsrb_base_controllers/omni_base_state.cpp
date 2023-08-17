@@ -153,10 +153,10 @@ void Convert(const State& in, trajectory_msgs::msg::JointTrajectoryPoint& out) {
 }
 
 
-StatePublisher::StatePublisher(const rclcpp::Node::SharedPtr& node,
+StatePublisher::StatePublisher(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node,
                                const std::string& topic_name,
                                const std::vector<std::string>& joint_names)
-    : node_(node), joint_names_(joint_names), last_state_published_time_(node->now()), state_publish_period_(0) {
+  : node_(node), joint_names_(joint_names), last_state_published_time_(node->now()), state_publish_period_(0,0) {
   const double state_publish_rate = GetPositiveParameter(node, "state_publish_rate", kDefaultStatePublishRate);
   state_publish_period_ = rclcpp::Duration::from_seconds(1.0 / state_publish_rate);
 

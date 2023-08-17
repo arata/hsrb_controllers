@@ -43,6 +43,7 @@ DAMAGE.
 
 #include <geometry_msgs/msg/twist.hpp>
 #include <joint_trajectory_controller/trajectory.hpp>
+#include "joint_trajectory_controller/interpolation_methods.hpp"
 #include <rclcpp/rclcpp.hpp>
 #include <realtime_tools/realtime_buffer.h>
 
@@ -67,7 +68,7 @@ class OmniBaseVelocityControl : public IBaseControlMethod {
  public:
   using Ptr = std::shared_ptr<OmniBaseVelocityControl>;
 
-  explicit OmniBaseVelocityControl(const rclcpp::Node::SharedPtr& node);
+  explicit OmniBaseVelocityControl(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node);
   virtual ~OmniBaseVelocityControl() = default;
   // 初期化する
   void Activate() override;
@@ -78,7 +79,8 @@ class OmniBaseVelocityControl : public IBaseControlMethod {
   void UpdateCommandVelocity(const geometry_msgs::msg::Twist::SharedPtr& msg);
 
  private:
-  rclcpp::Node::SharedPtr node_;
+  // rclcpp::Node::SharedPtr node_;
+  rclcpp_lifecycle::LifecycleNode::SharedPtr node_;
 
   // 排他制御
   std::mutex command_mutex_;
@@ -96,7 +98,7 @@ class OmniBaseTrajectoryControl : public IBaseControlMethod {
  public:
   using Ptr = std::shared_ptr<OmniBaseTrajectoryControl>;
 
-  explicit OmniBaseTrajectoryControl(const rclcpp::Node::SharedPtr& node, const std::vector<std::string>& cordinates);
+  explicit OmniBaseTrajectoryControl(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node, const std::vector<std::string>& cordinates);
   virtual ~OmniBaseTrajectoryControl() = default;
   // 初期化する
   void Activate() override;
@@ -123,7 +125,7 @@ class OmniBaseTrajectoryControl : public IBaseControlMethod {
   void ResetCurrentTrajectory();
 
  private:
-  rclcpp::Node::SharedPtr node_;
+  rclcpp_lifecycle::LifecycleNode::SharedPtr node_;
 
   // 制御のフィードバックゲイン
   Eigen::Vector3d feedback_gain_;
@@ -131,6 +133,9 @@ class OmniBaseTrajectoryControl : public IBaseControlMethod {
   std::vector<std::string> coordinate_names_;
   // 軌道追従完了を判断する速度の閾値
   double stop_velocity_threshold_;
+
+  // added
+  joint_trajectory_controller::interpolation_methods::InterpolationMethod interpolation_method_{joint_trajectory_controller::interpolation_methods::DEFAULT_INTERPOLATION};
 
   std::shared_ptr<joint_trajectory_controller::Trajectory>* trajectory_active_ptr_ = nullptr;
   std::shared_ptr<joint_trajectory_controller::Trajectory> trajectory_ptr_ = nullptr;

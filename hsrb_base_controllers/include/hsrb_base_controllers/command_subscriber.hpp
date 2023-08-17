@@ -55,12 +55,14 @@ namespace hsrb_base_controllers {
 /// 入力指令クラス
 class CommandSubscriber : private boost::noncopyable {
  public:
-  CommandSubscriber(const rclcpp::Node::SharedPtr& node,
+  CommandSubscriber(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node,
                     IControllerCommandInterface* controller);
   virtual ~CommandSubscriber() {}
 
  protected:
-  rclcpp::Node::SharedPtr node_;
+  // rclcpp::Node::SharedPtr node_;
+  // std::shared_ptr<rclcpp_lifecycle::LifecycleNode> node_;
+  rclcpp_lifecycle::LifecycleNode::SharedPtr node_;
   IControllerCommandInterface* controller_;
 };
 
@@ -69,7 +71,7 @@ class CommandVelocitySubscriber : public CommandSubscriber {
  public:
   using Ptr = std::shared_ptr<CommandVelocitySubscriber>;
 
-  CommandVelocitySubscriber(const rclcpp::Node::SharedPtr& node,
+  CommandVelocitySubscriber(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node,
                             IControllerCommandInterface* controller);
   virtual ~CommandVelocitySubscriber() {}
 
@@ -86,7 +88,7 @@ class CommandTrajectorySubscriber : public CommandSubscriber {
  public:
   using Ptr = std::shared_ptr<CommandTrajectorySubscriber>;
 
-  CommandTrajectorySubscriber(const rclcpp::Node::SharedPtr& node,
+  CommandTrajectorySubscriber(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node,
                               IControllerCommandInterface* controller);
   virtual ~CommandTrajectorySubscriber() {}
 
@@ -107,7 +109,7 @@ class TrajectoryActionServer : public CommandSubscriber {
  public:
   using Ptr = std::shared_ptr<TrajectoryActionServer>;
 
-  TrajectoryActionServer(const rclcpp::Node::SharedPtr& node,
+  TrajectoryActionServer(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node,
                          const std::vector<std::string>& cordinates,
                          IControllerCommandInterface* controller);
   virtual ~TrajectoryActionServer() {}

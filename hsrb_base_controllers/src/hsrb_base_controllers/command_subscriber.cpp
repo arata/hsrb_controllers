@@ -44,13 +44,13 @@ constexpr double kDefaultActionMonitorRate = 100.0;
 namespace hsrb_base_controllers {
 
 /// 入力指令クラス
-CommandSubscriber::CommandSubscriber(const rclcpp::Node::SharedPtr& node,
+CommandSubscriber::CommandSubscriber(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node,
                                      IControllerCommandInterface* controller)
     : node_(node), controller_(controller) {}
 
 
 /// 入力速度指令クラスの初期化
-CommandVelocitySubscriber::CommandVelocitySubscriber(const rclcpp::Node::SharedPtr& node,
+CommandVelocitySubscriber::CommandVelocitySubscriber(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node,
                                                      IControllerCommandInterface* controller)
     : CommandSubscriber(node, controller) {
   velocity_subscriber_ = node->create_subscription<geometry_msgs::msg::Twist>(
@@ -69,7 +69,7 @@ void CommandVelocitySubscriber::CommandVelocityCallback(const geometry_msgs::msg
 
 
 /// 入力軌道指令クラスの初期化
-CommandTrajectorySubscriber::CommandTrajectorySubscriber(const rclcpp::Node::SharedPtr& node,
+CommandTrajectorySubscriber::CommandTrajectorySubscriber(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node,
                                                          IControllerCommandInterface* controller)
     : CommandSubscriber(node, controller) {
   trajectory_subscriber_ = node->create_subscription<trajectory_msgs::msg::JointTrajectory>(
@@ -91,7 +91,7 @@ void CommandTrajectorySubscriber::CommandTrajectoryCallback(
 
 
 /// 入力軌道アクション指令クラスの初期化
-TrajectoryActionServer::TrajectoryActionServer(const rclcpp::Node::SharedPtr& node,
+TrajectoryActionServer::TrajectoryActionServer(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node,
                                                const std::vector<std::string>& cordinates,
                                                IControllerCommandInterface* controller)
     : CommandSubscriber(node, controller), cordinates_(cordinates) {

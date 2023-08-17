@@ -71,7 +71,7 @@ std::vector<uint32_t> MakePermutationVector(
 
 namespace hsrb_base_controllers {
 
-OmniBaseVelocityControl::OmniBaseVelocityControl(const rclcpp::Node::SharedPtr& node)
+OmniBaseVelocityControl::OmniBaseVelocityControl(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node)
     : node_(node) {
   // 速度指令値途絶判定時間を取得
   command_timeout_ = GetParameter(node, "command_timeout", kDefaultCommandTimeout);
@@ -114,7 +114,7 @@ void OmniBaseVelocityControl::UpdateCommandVelocity(const geometry_msgs::msg::Tw
 
 // コンストラクタ，パラメータの初期化を行う
 OmniBaseTrajectoryControl::OmniBaseTrajectoryControl(
-    const rclcpp::Node::SharedPtr& node,
+    const rclcpp_lifecycle::LifecycleNode::SharedPtr& node,
     const std::vector<std::string>& cordinates) : node_(node), coordinate_names_(cordinates) {
   stop_velocity_threshold_ = GetPositiveParameter(node, "stop_velocity_threshold", kStopVelocityThreshold);
   feedback_gain_(kIndexBaseX) = GetPositiveParameter(node, "odom_x.p_gain", kDefaultPGain);
@@ -168,22 +168,45 @@ bool OmniBaseTrajectoryControl::UpdateActiveTrajectory() {
 }
 
 // 軌道追従の目標状態を取得
-bool OmniBaseTrajectoryControl::SampleDesiredState(
-    const rclcpp::Time& time,
-    const std::vector<double>& current_positions,
-    const std::vector<double>& current_velocities,
-    trajectory_msgs::msg::JointTrajectoryPoint& desired_state,
-    bool& before_last_point,
-    double& time_from_point) {
+bool OmniBaseTrajectoryControl::SampleDesiredState(const rclcpp::Time& time,
+                                                   const std::vector<double>& current_positions,
+                                                   const std::vector<double>& current_velocities,
+                                                   trajectory_msgs::msg::JointTrajectoryPoint& desired_state,
+                                                   bool& before_last_point,
+                                                   double& time_from_point)
+{
   if (!(*trajectory_active_ptr_)->is_sampled_already()) {
     trajectory_msgs::msg::JointTrajectoryPoint current_state;
     current_state.positions = current_positions;
     current_state.velocities = current_velocities;
     (*trajectory_active_ptr_)->set_point_before_trajectory_msg(time, current_state);
   }
-  std::vector<trajectory_msgs::msg::JointTrajectoryPoint>::const_iterator start_segment_it;
-  std::vector<trajectory_msgs::msg::JointTrajectoryPoint>::const_iterator end_segment_it;
-  const bool is_ok = (*trajectory_active_ptr_)->sample(time, desired_state, start_segment_it, end_segment_it);
+  
+
+  /* FOXY
+    sample(const rclcpp::Time&,
+           trajectory_msgs::msg::JointTrajectoryPoint&,
+           std::vector<trajectory_msgs::msg::JointTrajectoryPoint_< std::allocator<void> >,
+           std::allocator<trajectory_msgs::msg::JointTrajectoryPoint_<std::allocator<void> > > >::const_iterator&,
+           std::vector<trajectory_msgs::msg::JointTrajectoryPoint_<std::allocator<void> >,
+           std::allocator<trajectory_msgs::msg::JointTrajectoryPoint_<std::allocator<void> > > >::const_iterator&)’
+  */
+
+  // std::vector<trajectory_msgs::msg::JointTrajectoryPoint>::const_iterator start_segment_it;
+  // std::vector<trajectory_msgs::msg::JointTrajectoryPoint>::const_iterator end_segment_it;    
+  // const bool is_ok = (*trajectory_active_ptr_)->sample(time, desired_state, start_segment_it, end_segment_it);
+
+  /* HUMBLE
+     sample(const rclcpp::Time &sample_time,
+            const interpolation_methods::InterpolationMethod interpolation_method,
+            trajectory_msgs::msg::JointTrajectoryPoint &output_state,
+            TrajectoryPointConstIter &start_segment_itr,
+            TrajectoryPointConstIter &end_segment_itr)
+  */
+  
+  joint_trajectory_controller::TrajectoryPointConstIter start_segment_it, end_segment_it;
+  const bool is_ok = (*trajectory_active_ptr_)->sample(time, interpolation_method_, desired_state, start_segment_it, end_segment_it);
+  
   if (is_ok) {
     before_last_point = end_segment_it != (*trajectory_active_ptr_)->end();
     const rclcpp::Time start_stamp = (*trajectory_active_ptr_)->get_trajectory_start_time();

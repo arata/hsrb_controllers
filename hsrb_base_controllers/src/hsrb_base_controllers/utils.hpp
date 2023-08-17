@@ -36,11 +36,14 @@ DAMAGE.
 #include <string>
 #include <rclcpp/rclcpp.hpp>
 
+#include <rclcpp_lifecycle/lifecycle_node.hpp>
+
 namespace hsrb_base_controllers {
 
 // デフォルト値ありのパラメータ取得
 template <typename ParameterType>
-auto GetParameter(const rclcpp::Node::SharedPtr& node,
+// auto GetParameter(const rclcpp::Node::SharedPtr& node,
+auto GetParameter(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node,
                   const std::string& name,
                   const ParameterType& default_value) {
   if (!node->has_parameter(name)) {
@@ -51,7 +54,9 @@ auto GetParameter(const rclcpp::Node::SharedPtr& node,
 }
 
 // 非正の場合，デフォルト値を使うパラメータ取得
-double GetPositiveParameter(const rclcpp::Node::SharedPtr& node, const std::string& parameter_name,
+// double GetPositiveParameter(const rclcpp::Node::SharedPtr& node,
+double GetPositiveParameter(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node,  
+                            const std::string& parameter_name,
                             double default_value);
 
 }  // namespace hsrb_base_controllers

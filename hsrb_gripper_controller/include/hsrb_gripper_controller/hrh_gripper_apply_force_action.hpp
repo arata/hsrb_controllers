@@ -105,7 +105,7 @@ class HrhGripperApplyForceAction : public HrhGripperAction<tmc_control_msgs::act
 
  private:
   /// アクションの初期化の実装
-  bool InitImpl(const rclcpp::Node::SharedPtr& node) override;
+  bool InitImpl(const rclcpp_lifecycle::LifecycleNode::SharedPtr& node) override;
   /// アクションの目標を更新する
   void UpdateActionImpl(const tmc_control_msgs::action::GripperApplyEffort::Goal& goal) override;
 
